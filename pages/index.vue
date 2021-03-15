@@ -1,5 +1,13 @@
 <template>
   <v-container>
+    <v-snackbar v-model="successsnackBar" absolute top right color="success">
+        <span>{{messageText}}</span>
+        <v-icon dark>mdi-checkbox-marked-circle</v-icon>
+      </v-snackbar>
+      <v-snackbar v-model="failuresnackBar" absolute top right color="red">
+        <span>{{messageText}}</span>
+        <v-icon dark>mdi-progress-alert</v-icon>
+      </v-snackbar>
     <v-flex xs12>
       <v-layout row wrap>
         <v-flex xs7>
@@ -13,7 +21,7 @@
             <v-card-text>
               <v-tabs v-model="tab" show-arrows icons-and-text dark grow>
                 <v-tabs-slider color="purple darken-4"></v-tabs-slider>
-                <v-tab v-for="i in tabs" :key="i">
+                <v-tab v-for="i in tabs" :key="i.name">
                   <v-icon large>{{ i.icon }}</v-icon>
                   <div class="caption py-1">{{ i.name }}</div>
                 </v-tab>
@@ -57,7 +65,7 @@
                               block
                               :disabled="!valid"
                               color="success"
-                              @click="validate"
+                              @click="validateLogin()"
                             >
                               Login
                             </v-btn>
@@ -119,9 +127,8 @@
                           >
                             <v-btn
                                block
-                              :disabled="!valid"
                               color="success"
-                              @click="validate"
+                              @click="validateRegister()"
                               >Register</v-btn
                             >
                           </v-col>
@@ -145,27 +152,28 @@ export default {
   data: () => ({
     dialog: true,
     isLogin: false,
+    successsnackBar: false,
+    failuresnackBar: false,
+    messageText: '',
     tab: 0,
     tabs: [
       { name: 'Login', icon: 'mdi-account' },
       { name: 'Register', icon: 'mdi-account-outline' }
     ],
     valid: true,
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
     verify: '',
     loginPassword: '',
     loginEmail: '',
     emailRules: [
-      (v) => { !!v || 'Required' },
-      (v) => { /.+@.+\..+/.test(v) || 'E-mail must be valid' }
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
     ],
     show1: false,
     rules: {
-      required: (value) => { !!value || 'Required.' },
-      min: (v) => { (v && v.length >= 8) || 'Min 8 characters' }
+      required: value => !!value || 'Required.',
+      min: v => (v && v.length >= 8) || 'Min 8 characters'
     }
   }),
   computed: {
@@ -174,16 +182,37 @@ export default {
     }
   },
   methods: {
-    validate () {
-      if (this.$refs.loginForm.validate()) {
+    validateRegister () {
+      if (this.$refs.registerForm.validate()) {
         // submit form to server/API here...
+        this.$axios.$post('/api/users/register', {
+          email: this.email,
+          password: this.password,
+          password2: this.verify
+        }).then((response) => {
+          this.successsnackBar = true
+          this.messageText = response.message + ' Login with your credentials'
+        }).catch((err) => {
+          console.log(err)
+          this.failuresnackBar = true
+          this.messageText = 'Mail Already Exists'
+        })
       }
     },
-    reset () {
-      this.$refs.form.reset()
-    },
-    resetValidation () {
-      this.$refs.form.resetValidation()
+    validateLogin () {
+      if (this.$refs.loginForm.validate()) {
+        this.$axios.$post('/api/users/login', {
+          email: this.loginEmail,
+          password: this.loginPassword
+        }).then((response) => {
+          this.successsnackBar = true
+          this.messageText = response.message
+        }).catch((err) => {
+          console.log(err)
+          this.failuresnackBar = true
+          this.messageText = 'Check your email and password'
+        })
+      }
     }
   }
 }
