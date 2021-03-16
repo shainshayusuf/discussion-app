@@ -12,6 +12,12 @@ const DiscussionSchema = new Schema({
         required: true
     },
 
+    comments:{
+        type:Array,
+        required:false,
+        default:[]
+    },
+
     createdBy: {
         type: String,
         required: true
@@ -19,7 +25,8 @@ const DiscussionSchema = new Schema({
 
     date: {
         type: Date,
-        default: Date.now
+        default: Date.now(),
+        required:false
     }
 
 

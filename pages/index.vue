@@ -147,6 +147,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: 'HomePage',
   data: () => ({
@@ -182,6 +183,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["update"]),
     validateRegister () {
       if (this.$refs.registerForm.validate()) {
         // submit form to server/API here...
@@ -207,6 +209,8 @@ export default {
         }).then((response) => {
           this.successsnackBar = true
           this.messageText = response.message
+          this.update({authenticated:true,userLogged:response.user})
+          this.$router.push('/discussion')
         }).catch((err) => {
           console.log(err)
           this.failuresnackBar = true

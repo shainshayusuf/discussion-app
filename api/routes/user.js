@@ -3,16 +3,13 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const auth = require('../helpers/auth');
-
 
 //load user model
 require('../models/user');
 const User = mongoose.model('users');
 
 //login form post
-router.post('/login',
-    auth.optional, (req, res, next) => {
+router.post('/login', (req, res, next) => {
 
 
         if (!req.body.email) {
@@ -37,10 +34,7 @@ router.post('/login',
             }
 
             if (passportUser) {
-                const user = passportUser;
-                user.token = passportUser.generateJWT();
-
-                return res.json({ user: user.toAuthJSON(), message: 'Login Successful' });
+               return res.json({  message: 'Login Successful' ,user:passportUser.email});
             }
 
             return res.status(400).json({ message: 'not exist' });
@@ -51,7 +45,7 @@ router.post('/login',
 
 
 //register form post
-router.post('/register',auth.optional, (req, res) => {
+router.post('/register', (req, res) => {
     let errors = [];
 
     if (req.body.password != req.body.password2) {
@@ -85,7 +79,7 @@ router.post('/register',auth.optional, (req, res) => {
                             newUser.password = hash;
                             newUser.save()
                                 .then(user => {
-                                    res.status(200).json({ message: 'Login succesful!', type: 'success', status: 200, user: newUser.toAuthJSON() })
+                                    res.status(200).json({ message: 'Login succesful!', type: 'success', status: 200 })
 
                                 })
                                 .catch(err => {
@@ -99,13 +93,6 @@ router.post('/register',auth.optional, (req, res) => {
 
     }
 });
-
-router.get('/current', auth.optional, (req, res, next) => {
-    
-  
-        return res.json({ user: user.toAuthJSON() });
-      
-  });
 
 //logout user
 router.get('/logout', (req, res) => {
