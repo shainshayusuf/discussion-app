@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  mode:'spa',
+  ssr: false,
   target:'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head

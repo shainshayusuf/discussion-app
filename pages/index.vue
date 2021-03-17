@@ -13,6 +13,7 @@
         <v-flex xs7>
           <v-card style="margin: 20px; padding: 10px;max-height: 700px" class="overflow-y-auto">
             <v-card-title>All Discussions</v-card-title>
+            <h5 style="margin-left:15px">Login to view detailed view</h5>
             <all-discussion></all-discussion>
           </v-card>
         </v-flex>
