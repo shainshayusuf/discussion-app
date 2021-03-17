@@ -115,7 +115,7 @@ export default {
               this.discussions[index].comments.push(data);
             }
           });
-          this.selected.comments.push(data);
+         // this.selected.comments.push(data);
         })
         .catch((err) => {
           console.log(err);
