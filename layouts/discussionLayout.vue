@@ -34,7 +34,6 @@ export default {
        ...mapMutations(["update"]),
       logout(){
           this.$axios.$get('/api/users/logout').then(()=>{
-              console.log('Logged Out')
               this.update({authenticated:false,userLogged:''})
               this.$router.push('/')
           })

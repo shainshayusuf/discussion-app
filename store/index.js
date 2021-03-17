@@ -12,17 +12,18 @@ const createStore =() => {
             update (state, payload) {
              state.authenticated = payload.authenticated
              state.userLogged = payload.userLogged
+            //  localStorage.setItem('auth',JSON.stringify(state.))
             }
           },
         actions:{
-            updateDetails(vuexContext,data){
-                vuexContext.commit('update',data);
-            }
         },
         getters: {
             getuserLogged(state) {
                 return state.userLogged
             },
+            getAuthValue(state) {
+                return state.authenticated
+            }
             
         }
     })

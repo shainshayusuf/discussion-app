@@ -12,34 +12,34 @@ const User = mongoose.model('users');
 router.post('/login', (req, res, next) => {
 
 
-        if (!req.body.email) {
-            return res.status(422).json({
-                errors: {
-                    email: 'is required',
-                },
-            });
+    if (!req.body.email) {
+        return res.status(422).json({
+            errors: {
+                email: 'is required',
+            },
+        });
+    }
+
+    if (!req.body.password) {
+        return res.status(422).json({
+            errors: {
+                password: 'is required',
+            },
+        });
+    }
+
+    return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
+        if (err) {
+            return next(err);
         }
 
-        if (!req.body.password) {
-            return res.status(422).json({
-                errors: {
-                    password: 'is required',
-                },
-            });
+        if (passportUser) {
+            return res.json({ message: 'Login Successful', user: passportUser.email });
         }
 
-        return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
-            if (err) {
-                return next(err);
-            }
-
-            if (passportUser) {
-               return res.json({  message: 'Login Successful' ,user:passportUser.email});
-            }
-
-            return res.status(400).json({ message: 'not exist' });
-        })(req, res, next);
-    });
+        return res.status(400).json({ message: 'not exist' });
+    })(req, res, next);
+});
 
 
 
@@ -79,11 +79,11 @@ router.post('/register', (req, res) => {
                             newUser.password = hash;
                             newUser.save()
                                 .then(user => {
-                                    res.status(200).json({ message: 'Login succesful!', type: 'success', status: 200 })
+                                    res.status(200).json({ message: 'Register succesful!', type: 'success', status: 200 })
 
                                 })
                                 .catch(err => {
-                                    console.log(err);
+                                    res.send(400)
                                     return;
                                 });
                         });

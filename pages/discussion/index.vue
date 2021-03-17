@@ -1,34 +1,28 @@
 <template>
   <v-container>
-    <add-discussion></add-discussion>
-    <v-card v-for="discussion in discussions" :key="discussion._id">
-        <v-card-title>{{discussion.topic}}</v-card-title>
-    </v-card>
+    <add-discussion v-on:passValue="emitValue"></add-discussion>
+    <all-discussion :update="updateVal"></all-discussion>
   </v-container>
 </template>
 
 <script>
+import allDiscussion from "~/components/allDiscussion.vue";
 export default {
+  components: { allDiscussion },
   middleware: "authenticated",
   name: "discussionPage",
   layout: "discussionLayout",
-  data(){
-      return {
-     discussions : []
-      }
+  data() {
+    return {
+      discussions: [],
+      updateVal:true
+    };
   },
   methods: {
-      getAllDiscussion(){
-          this.$axios.$get('api/discussion/getAll').then((res) => {
-              console.log(res.data)
-              this.discussions = res.data
-          }).catch((err) => {
-              console.log(err)
-          })
-      }
+    emitValue(val) {
+      this.updateVal = !this.updateVal
+    },
   },
-  created(){
-      this.getAllDiscussion();
-  }
+  created() {},
 };
 </script>

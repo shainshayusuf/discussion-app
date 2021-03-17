@@ -4,7 +4,6 @@ module.exports = {
       
       return next();
     }
-    console.log(req.isAuthenticated())
     res.redirect('/');
   },
 };
